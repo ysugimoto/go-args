@@ -4,17 +4,25 @@ import (
 	"strings"
 )
 
+// Private alias struct
 type alias struct {
-	name  string
+	// long name
+	name string
+
+	// actual value
 	value interface{}
 }
 
+// Argument struct
 type Args struct {
-	commands []string
-	options  map[string]interface{}
-	aliases  map[string]alias
+	// Parsed options
+	options map[string]interface{}
+
+	// Defined aliases
+	aliases map[string]alias
 }
 
+// Instantiate Args pointer
 func New() *Args {
 	return &Args{
 		options: make(map[string]interface{}),
@@ -22,6 +30,7 @@ func New() *Args {
 	}
 }
 
+// Define alias
 func (a *Args) Alias(long, short string, value interface{}) *Args {
 	a.aliases[short] = alias{
 		name:  long,
@@ -31,6 +40,7 @@ func (a *Args) Alias(long, short string, value interface{}) *Args {
 	return a
 }
 
+// Parse args from supplied string slice
 func (a *Args) Parse(args []string) *Context {
 	commands := make([]string, 0)
 	size := len(args)
