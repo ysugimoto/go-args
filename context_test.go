@@ -6,7 +6,7 @@ import (
 )
 
 var c = args.NewContext(
-	[]string{"foo", "bar", "baz"},
+	[]string{"foo", "bar", "baz", "100"},
 	map[string]interface{}{
 		"string":  "LoremIpsum",
 		"integer": "10",
@@ -67,5 +67,19 @@ func TestHasReturnsFalse(t *testing.T) {
 	v := c.Has("notFound")
 	if v != false {
 		t.Errorf("Context.Has() assertion failed: expect false, actual %v", v)
+	}
+}
+
+func TestStringAt(t *testing.T) {
+	v := c.StringAt(0)
+	if v != "foo" {
+		t.Errorf("Context.StringAt() assertion failed: expect foo, actual %s", v)
+	}
+}
+
+func TestIntAt(t *testing.T) {
+	v := c.IntAt(3)
+	if v != 100 {
+		t.Errorf("Context.IntAt() assertion failed: expect 100, actual %v", v)
 	}
 }

@@ -55,12 +55,31 @@ func (c *Context) Has(name string) (has bool) {
 	return
 }
 
-// Get subcommand at
+// Alias for StringAt
 func (c *Context) At(index int) string {
 	if len(c.commands) < index {
 		return ""
 	}
 	return c.commands[index]
+}
+
+// Get subcommand at index as string
+func (c *Context) StringAt(index int) string {
+	if len(c.commands) < index {
+		return ""
+	}
+	return c.commands[index]
+}
+
+// Get subcommand at index as inttring
+func (c *Context) IntAt(index int) int {
+	if len(c.commands) < index {
+		return 0
+	}
+	if i, err := strconv.Atoi(c.commands[index]); err == nil {
+		return i
+	}
+	return 0
 }
 
 // Get subcommand size
