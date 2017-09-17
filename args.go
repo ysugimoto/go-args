@@ -32,9 +32,12 @@ func New() *Args {
 
 // Define alias
 func (a *Args) Alias(long, short string, value interface{}) *Args {
-	a.aliases[short] = alias{
-		name:  long,
-		value: value,
+	// If short name is empty, accepts long options only
+	if short != "" {
+		a.aliases[short] = alias{
+			name:  long,
+			value: value,
+		}
 	}
 	a.options[long] = value
 	return a
