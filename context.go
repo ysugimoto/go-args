@@ -11,19 +11,33 @@ type Context struct {
 
 	// Parsed options from alias
 	options map[string]interface{}
+
+	// Default values
+	defaults map[string]interface{}
 }
 
 // Instantiate context pointer
-func NewContext(commands []string, options map[string]interface{}) *Context {
+func NewContext(commands []string, options map[string]interface{}, defaults map[string]interface{}) *Context {
 	return &Context{
 		commands: commands,
 		options:  options,
+		defaults: defaults,
 	}
+}
+
+func (c *Context) getValue(name string) interface{} {
+	if v, ok := c.options[name]; ok {
+		return v
+	}
+	if v, ok := c.defaults[name]; ok {
+		return v
+	}
+	return nil
 }
 
 // Get option as string
 func (c *Context) String(name string) (value string) {
-	if v, ok := c.options[name]; ok {
+	if v := c.getValue(name); v != nil {
 		value = v.(string)
 	}
 	return
@@ -31,7 +45,7 @@ func (c *Context) String(name string) (value string) {
 
 // Get option as int
 func (c *Context) Int(name string) (value int) {
-	if v, ok := c.options[name]; ok {
+	if v := c.getValue(name); v != nil {
 		switch v.(type) {
 		case int:
 			value = v.(int)
@@ -46,7 +60,7 @@ func (c *Context) Int(name string) (value int) {
 
 // Get option as bool
 func (c *Context) Bool(name string) (value bool) {
-	if v, ok := c.options[name]; ok {
+	if v := c.getValue(name); v != nil {
 		switch v.(type) {
 		case bool:
 			value = v.(bool)

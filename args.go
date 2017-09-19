@@ -20,13 +20,17 @@ type Args struct {
 
 	// Defined aliases
 	aliases map[string]alias
+
+	// Default values
+	defaults map[string]interface{}
 }
 
 // Instantiate Args pointer
 func New() *Args {
 	return &Args{
-		options: make(map[string]interface{}),
-		aliases: make(map[string]alias),
+		options:  make(map[string]interface{}),
+		aliases:  make(map[string]alias),
+		defaults: make(map[string]interface{}),
 	}
 }
 
@@ -39,7 +43,7 @@ func (a *Args) Alias(long, short string, value interface{}) *Args {
 			value: value,
 		}
 	}
-	a.options[long] = value
+	a.defaults[long] = value
 	return a
 }
 
@@ -78,5 +82,6 @@ func (a *Args) Parse(args []string) *Context {
 	return &Context{
 		commands: commands,
 		options:  a.options,
+		defaults: a.defaults,
 	}
 }

@@ -12,6 +12,7 @@ var c = args.NewContext(
 		"integer": "10",
 		"boolean": true,
 	},
+	map[string]interface{}{},
 )
 
 func TestString(t *testing.T) {
