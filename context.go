@@ -32,8 +32,13 @@ func (c *Context) String(name string) (value string) {
 // Get option as int
 func (c *Context) Int(name string) (value int) {
 	if v, ok := c.options[name]; ok {
-		if vv, err := strconv.Atoi(v.(string)); err == nil {
-			value = vv
+		switch v.(type) {
+		case int:
+			value = v.(int)
+		case string:
+			if vv, err := strconv.Atoi(v.(string)); err == nil {
+				value = vv
+			}
 		}
 	}
 	return
@@ -42,7 +47,17 @@ func (c *Context) Int(name string) (value int) {
 // Get option as bool
 func (c *Context) Bool(name string) (value bool) {
 	if v, ok := c.options[name]; ok {
-		value = v.(bool)
+		switch v.(type) {
+		case bool:
+			value = v.(bool)
+		case string:
+			vv := v.(string)
+			if vv == "true" {
+				value = true
+			} else if vv == "false" {
+				value = false
+			}
+		}
 	}
 	return
 }
@@ -57,7 +72,7 @@ func (c *Context) Has(name string) (has bool) {
 
 // Alias for StringAt
 func (c *Context) At(index int) string {
-	if len(c.commands) < index {
+	if len(c.commands)-1 < index {
 		return ""
 	}
 	return c.commands[index]
@@ -65,7 +80,7 @@ func (c *Context) At(index int) string {
 
 // Get subcommand at index as string
 func (c *Context) StringAt(index int) string {
-	if len(c.commands) < index {
+	if len(c.commands)-1 < index {
 		return ""
 	}
 	return c.commands[index]
@@ -73,7 +88,7 @@ func (c *Context) StringAt(index int) string {
 
 // Get subcommand at index as inttring
 func (c *Context) IntAt(index int) int {
-	if len(c.commands) < index {
+	if len(c.commands)-1 < index {
 		return 0
 	}
 	if i, err := strconv.Atoi(c.commands[index]); err == nil {
