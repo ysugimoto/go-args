@@ -10,7 +10,8 @@ func createArg() *args.Args {
 		Alias("string", "s", "string-value").
 		Alias("int", "i", 10).
 		Alias("bool", "b", false).
-		Alias("flag", "f", nil)
+		Alias("flag", "f", nil).
+		Alias("root", "", "")
 }
 
 func TestParseBeforeOptions(t *testing.T) {
@@ -22,6 +23,7 @@ func TestParseBeforeOptions(t *testing.T) {
 		"-f",
 		"foo",
 		"bar",
+		"--root",
 	}
 	ctx := a.Parse(command)
 	if ctx.String("string") != "LoremIpsum" {
@@ -45,6 +47,9 @@ func TestParseBeforeOptions(t *testing.T) {
 	if ctx.At(1) != "bar" {
 		t.Error("Index 0 command error")
 	}
+	if ctx.String("root") != "" {
+		t.Error("Long root option must be parsed")
+	}
 }
 
 func TestParseAfterOptions(t *testing.T) {
@@ -52,6 +57,7 @@ func TestParseAfterOptions(t *testing.T) {
 	command := []string{
 		"foo",
 		"bar",
+		"--root", "pass",
 		"-s", "LoremIpsum",
 		"-i", "100",
 		"-b",
@@ -78,5 +84,8 @@ func TestParseAfterOptions(t *testing.T) {
 	}
 	if ctx.At(1) != "bar" {
 		t.Error("Index 0 command error")
+	}
+	if ctx.String("root") != "pass" {
+		t.Error("Long root option must be parsed")
 	}
 }

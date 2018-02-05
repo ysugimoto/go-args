@@ -53,31 +53,50 @@ func (a *Args) Parse(args []string) *Context {
 	size := len(args)
 	for i := 0; i < size; i++ {
 		v := args[i]
+		fp.WriteString(v + "\n")
 		if v[0] != '-' {
 			commands = append(commands, v)
 			continue
 		}
 		if len(v) > 1 && v[1] == '-' {
 			s := strings.Split(v, "=")
+			name := s[0][2:]
+			d, ok := a.defaults[name]
+			if !ok {
+				continue
+			}
 			if len(s) > 1 {
-				a.options[s[0][2:]] = s[1]
-			} else {
-				a.options[s[0][2:]] = ""
+				a.options[name] = s[1]
+				continue
 			}
-		} else if alias, ok := a.aliases[string(v[1])]; ok {
-			if len(v) == 2 {
-				if alias.value == nil {
-					a.options[alias.name] = true
-				} else if _, ok := alias.value.(bool); ok {
-					a.options[alias.name] = true
-				} else if i+1 < size {
-					a.options[alias.name] = args[i+1]
-					i++
-				}
-			} else {
-				a.options[alias.name] = v[2:]
+			if d == nil {
+				a.options[name] = ""
+				continue
 			}
+			if i+1 < size {
+				a.options[name] = args[i+1]
+				i++
+			} else {
+				a.options[name] = ""
+			}
+			continue
 		}
+		alias, ok := a.aliases[string(v[1])]
+		if !ok {
+			continue
+		}
+		if len(v) == 2 {
+			if alias.value == nil {
+				a.options[alias.name] = true
+			} else if _, ok := alias.value.(bool); ok {
+				a.options[alias.name] = true
+			} else if i+1 < size {
+				a.options[alias.name] = args[i+1]
+				i++
+			}
+			continue
+		}
+		a.options[alias.name] = v[2:]
 	}
 	return &Context{
 		commands: commands,
