@@ -53,7 +53,6 @@ func (a *Args) Parse(args []string) *Context {
 	size := len(args)
 	for i := 0; i < size; i++ {
 		v := args[i]
-		fp.WriteString(v + "\n")
 		if v[0] != '-' {
 			commands = append(commands, v)
 			continue
