@@ -115,3 +115,8 @@ func (c *Context) IntAt(index int) int {
 func (c *Context) Len() int {
 	return len(c.commands)
 }
+
+// Get all subcommands
+func (c *Context) Subcommands() []string {
+	return c.commands
+}
